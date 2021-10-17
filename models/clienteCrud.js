@@ -11,9 +11,10 @@ getClientes = () => {
 };
 
 getClientesByName = (name) => {
+  let arrayRegex = name.split(" ").map((n) => new RegExp(n));
   const clientes = global.conn
     .collection("clientes")
-    .find({ nome: name })
+    .find({ nomeCompleto: { $regex: name } })
     .toArray();
   return clientes;
 };

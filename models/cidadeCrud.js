@@ -12,7 +12,7 @@ const getCidades = () => {
 const getCidadeByName = (name) => {
   const cidadeByName = global.conn
     .collection("cidades")
-    .find({ nome: name })
+    .find({ nome: { $regex: name } })
     .toArray();
   return cidadeByName;
 };
@@ -20,7 +20,7 @@ const getCidadeByName = (name) => {
 const getCidadeByState = (state) => {
   const cidadeByState = global.conn
     .collection("cidades")
-    .find({ estado: state })
+    .find({ estado: { $regex: state } })
     .toArray();
   return cidadeByState;
 };
