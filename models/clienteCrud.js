@@ -20,7 +20,6 @@ getClientesByName = (name) => {
 };
 getClienteById = (id) => {
   const ObjectId = new objectId(id);
-
   const cliente = global.conn.collection("clientes").findOne({ _id: ObjectId });
   return cliente;
 };

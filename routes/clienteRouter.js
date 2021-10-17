@@ -1,51 +1,62 @@
 var express = require("express");
 var clienteRouter = express.Router();
 
-clienteRouter.get("/", async function (req, res) {
-  const clientes = await global.crud.clienteCrud.getClientes();
-  res.send({ clientes, status: 200 });
+const {
+  listaClientes,
+  getClientesByName,
+  getClientesById,
+  inserirCliente,
+  alterarCliente,
+  apagarCliente,
+} = require("../services/clienteService");
+
+clienteRouter.get("/", function (req, res) {
+  const clientes = listaClientes();
+  clientes.then((data) => {
+    res.status(data.status).json(data);
+  });
 });
 
-clienteRouter.get("/nome/:nome", async function (req, res) {
-  const clientesByName = await global.crud.clienteCrud.getClientesByName(
-    req.params.nome
-  );
-  return res.send({ clientesByName, status: 200 });
+clienteRouter.get("/nome/:nome", function (req, res) {
+  const clientesByName = getClientesByName(req.params.nome);
+  clientesByName.then((data) => {
+    res.status(data.status).json(data);
+  });
 });
 
 clienteRouter.get("/id/:id", async function (req, res) {
-  const clientesById = await global.crud.clienteCrud.getClienteById(
-    req.params.id
-  );
-  return res.send({ clientesById, status: 200 });
+  const clientesById = getClientesById(req.params.id);
+  clientesById.then((data) => {
+    res.status(data.status).json(data);
+  });
 });
 
 clienteRouter.post("/", async function (req, res) {
   const { nomeCompleto, sexo, dataNascimento, idade, cidade } = req.body;
-  await global.crud.clienteCrud.addClientes({
+  const clienteInserted = inserirCliente({
     nomeCompleto,
     sexo,
     dataNascimento,
     idade,
     cidade,
   });
-  res.send({ message: "Cliente cadastrada com sucesso!", status: 201 });
+  clienteInserted.then((data) => {
+    res.status(data.status).json(data);
+  });
 });
 
 clienteRouter.put("/:id", async function (req, res) {
-  updatedCliente = await global.crud.clienteCrud.updateCliente(
-    req.params.id,
-    req.body
-  );
-  return res.send({
-    message: "Cliente atualizada com sucesso!",
-    status: 200,
+  updatedCliente = alterarCliente(req.params.id, req.body);
+  updatedCliente.then((data) => {
+    res.status(data.status).json(data);
   });
 });
 
 clienteRouter.delete("/:id", function (req, res) {
-  deleteCliente = global.crud.clienteCrud.deleteCliente(req.params.id);
-  return res.send({ message: "Cliente excluido com sucesso!", status: 200 });
+  deleteCliente = apagarCliente(req.params.id);
+  deleteCliente.then((data) => {
+    res.status(data.status).json(data);
+  });
 });
 
 module.exports = clienteRouter;
