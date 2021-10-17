@@ -28,6 +28,11 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  const error = err.stack;
+  res.status(500).json({ error });
+});
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

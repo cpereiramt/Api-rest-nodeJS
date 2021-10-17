@@ -8,17 +8,17 @@ cidadeRouter.get("/", async function (_, res) {
 
 cidadeRouter.get("/nome/:nome", async function (req, res) {
   //console.log(req.params.nome, "=====================>");
-  const cidadesByNome = await global.crud.cidadeCrud.getCidadeByName(
+  const cidadesByName = await global.crud.cidadeCrud.getCidadeByName(
     req.params.nome
   );
-  return res.send({ cidadesByNome, status: 200 });
+  return res.send({ cidadesByName, status: 200 });
 });
 
 cidadeRouter.get("/estado/:estado", async function (req, res) {
-  const cidadesByEstado = await global.crud.cidadeCrud.getCidadeByState(
+  const cidadesByState = await global.crud.cidadeCrud.getCidadeByState(
     req.params.estado
   );
-  return res.send({ cidadesByEstado, status: 200 });
+  return res.send({ cidadesByState, status: 200 });
 });
 
 cidadeRouter.post("/", async function (req, res) {
