@@ -1,4 +1,5 @@
 const objectId = require("mongodb").ObjectId;
+const sanitizeStringFunction = require("../utils/sanitizeString");
 
 const listaClientes = async () => {
   const listaClientes = await global.crud.clienteCrud.getClientes();
@@ -10,8 +11,10 @@ const listaClientes = async () => {
 };
 
 const getClientesByName = async (nome) => {
+  const sanitizedName = sanitizeStringFunction(nome);
+
   const clienteEncontrado = await global.crud.clienteCrud.getClientesByName(
-    nome
+    sanitizedName
   );
   console.log(clienteEncontrado, "cliente");
   if (clienteEncontrado.length === 0) {
@@ -39,7 +42,6 @@ const getClientesById = async (id) => {
 };
 
 const inserirCliente = async (cliente) => {
-  console.log(cliente, "cliente");
   if (!cliente.nomeCompleto) {
     return { message: "Nome não pode ser nulo !", status: 400 };
   }
@@ -58,11 +60,21 @@ const inserirCliente = async (cliente) => {
   const clienteEncontrado = await global.crud.clienteCrud.getClientesByName(
     cliente.nomeCompleto
   );
-  if (clienteEncontrado) {
+  console.log(clienteEncontrado, "cliente");
+  if (clienteEncontrado && clienteEncontrado.length > 0) {
     return { message: "Cliente já cadastrado !", status: 400 };
   }
 
-  const clienteInserido = await global.clienteCrud.addClientes("clientes");
+  const sanitizedName = sanitizeStringFunction(cliente.nomeCompleto);
+  console.log(sanitizedName, "newCliente");
+  const newCliente = {
+    nomeCompleto: sanitizedName,
+    sexo: cliente.sexo,
+    dataNascimento: cliente.dataNascimento,
+    idade: cliente.idade,
+    cidade: cliente.cidade,
+  };
+  const clienteInserido = await global.crud.clienteCrud.addClientes(newCliente);
   return { message: "cliente inserido com sucesso !", status: 201 };
 };
 
@@ -98,9 +110,17 @@ const alterarCliente = async (id, cliente) => {
   if (!clienteEncontrado) {
     return { message: "Cliente não encontrado !", status: 404 };
   } else {
+    const sanitizedName = sanitizeStringFunction(cliente.nomeCompleto);
+    const newCliente = {
+      nomeCompleto: sanitizedName,
+      sexo: cliente.sexo,
+      dataNascimento: cliente.dataNascimento,
+      idade: cliente.idade,
+      cidade: cliente.cidade,
+    };
     const clienteAlterado = await global.conn
       .collection("clientes")
-      .updateOne({ _id: ObjectId }, { $set: cliente });
+      .updateOne({ _id: ObjectId }, { $set: newCliente });
     return { message: "cliente alterado com sucesso !", status: 200 };
   }
 };

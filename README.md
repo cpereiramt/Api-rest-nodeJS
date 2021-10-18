@@ -9,6 +9,4 @@ Para execução do projeto siga os passos abaixo:
 * E para gerar o relatório de cobertura de testes, execute o comando abaixo:
    <code>npm coverage</code>
 
-### Demo
-
 

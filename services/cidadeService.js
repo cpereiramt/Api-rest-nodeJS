@@ -1,3 +1,5 @@
+const sanitizeStringFunction = require("../utils/sanitizeString");
+
 const getCidades = async () => {
   const listarCidades = await global.crud.cidadeCrud.getCidades();
   console.log(listarCidades);
@@ -9,7 +11,10 @@ const getCidades = async () => {
 };
 
 const getCidadeByName = async (nome) => {
-  const cidadeByName = await global.crud.cidadeCrud.getCidadeByName(nome);
+  const sanitizeNome = sanitizeStringFunction(nome);
+  const cidadeByName = await global.crud.cidadeCrud.getCidadeByName(
+    sanitizeNome
+  );
   if (cidadeByName.length === 0) {
     return { message: "Nenhuma cidade encontrada", status: 404 };
   }
@@ -17,7 +22,11 @@ const getCidadeByName = async (nome) => {
 };
 
 const getCidadeByState = async (estado) => {
-  const cidadeByState = await global.crud.cidadeCrud.getCidadeByState(estado);
+  const sanitizeEstado = sanitizeStringFunction(estado);
+
+  const cidadeByState = await global.crud.cidadeCrud.getCidadeByState(
+    sanitizeEstado
+  );
   if (cidadeByState.length === 0) {
     return { message: "Nenhuma cidade encontrada", status: 404 };
   }
@@ -31,7 +40,15 @@ const inserirCidade = async (cidade) => {
   if (cidade.estado === undefined || cidade.estado === null) {
     return { message: "Estado não informado", status: 400 };
   }
-  const inserirCidade = await global.crud.cidadeCrud.addCidade(cidade);
+
+  const sanitizeNome = sanitizeStringFunction(cidade.nome);
+  const sanitizeEstado = sanitizeStringFunction(cidade.estado);
+  const newCidade = {
+    nome: sanitizeNome,
+    estado: sanitizeEstado,
+  };
+
+  const inserirCidade = await global.crud.cidadeCrud.addCidade(newCidade);
   return { message: "Cidade inserida com sucesso !", status: 200 };
 };
 
