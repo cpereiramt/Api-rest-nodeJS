@@ -7,6 +7,8 @@ var logger = require("morgan");
 var indexRouter = require("./routes/index");
 var cidadeRouter = require("./routes/cidadeRouter");
 var clienteRouter = require("./routes/clienteRouter");
+global.db = require("./database/configuration");
+global.crud = require("./models/index");
 
 var app = express();
 

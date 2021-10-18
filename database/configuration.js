@@ -4,5 +4,5 @@ MongoClient.connect(
   `mongodb://${process.env.MONGODBPATH}:${process.env.MONGODBPORT}`
 ).then((conn) => {
   console.log("Connected to MongoDB");
-  global.conn = conn.db("meus_registros");
+  global.conn = conn.db(process.env.MONGODATABASE);
 });
